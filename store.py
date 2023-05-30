@@ -35,7 +35,7 @@ class Store:
             if product.is_active():
                 active_product.append(product)
         return active_product
-        # return self.product_list
+       
     def order(self, shopping_list):
         """ Makes an order and returns the total price of the order."""
         total_price = 0
