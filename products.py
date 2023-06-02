@@ -6,12 +6,14 @@ class Product:
     """
 
     def __init__(self, name: str, price: float, quantity: int):
+        if not name:
+            raise ValueError("Name cannot be empty.")
+        if price < 0:
+            raise ValueError("Price cannot be negative.")
         self.name = name
         self.price = price
         self.quantity = quantity
         self.active = True
-        if self.name == " " or self.price < 0:
-            raise Exception("Error")
 
     def get_quantity(self):
         """ Getter function for quantity. Return the quantity."""
@@ -33,9 +35,11 @@ class Product:
         """ Activates the product."""
         self.active = True
 
-    def deactivate(self):
-        """ Deactivates the product."""
-        self.active = False
+    def deactivate(self, amount):
+        """ Deactivates the product if the quantity reaches 0"""
+        self.quantity -= amount
+        if self.quantity <= 0:
+            self.active = False
 
     def show(self):
         """ Show list of products in the store."""
@@ -46,7 +50,7 @@ class Product:
         if quantity <= 0:
             raise ValueError("Quantity must be greater than 0.")
         if self.quantity < quantity:
-            raise Exception("Not enough quantity available.")
+            raise ValueError("Not enough quantity.")
         total_price = self.price * quantity
         self.quantity -= quantity
         return total_price
