@@ -1,4 +1,4 @@
-from products import Product
+from products import Product, NonStockedProducts, LimitedProducts
 from store import Store
 
 
@@ -59,13 +59,23 @@ def make_order(store_obj):
             total_payment = 0
             if int(product_number) == 1:
                 product_name = all_products[0]
+                shopping_list.append([product_name, int(product_amount)])
             if int(product_number) == 2:
                 product_name = all_products[1]
+                shopping_list.append([product_name, int(product_amount)])
             if int(product_number) == 3:
                 product_name = all_products[2]
-            shopping_list.append([product_name, int(product_amount)])
-            total_payment += store_obj.order(shopping_list)
+                shopping_list.append([product_name, int(product_amount)])
+            if int(product_number) == 4:
+                product_name = all_products[3]
+                NonStockedProducts.show(product_name)
+                shopping_list.append([product_name, int(product_amount)])
+            if int(product_number) == 5:
+                product_name = all_products[4]
+                LimitedProducts.show(product_name)
+                shopping_list.append([product_name, int(product_amount)])
             print("Product added to list!\n")
+            total_payment += store_obj.order(shopping_list)
 
 
 def main():
@@ -76,7 +86,9 @@ def main():
     products_list = [Product("MacBook Air M2", price=1450, quantity=100),
                      Product("Bose QuietComfort Earbuds", price=250, quantity=500),
                      Product("Google Pixel 7", price=500, quantity=250),
-                     ]
+                     NonStockedProducts("Windows License", price=125),
+                     LimitedProducts("Shipping", price=10, quantity=250, maximum=1)
+                    ]
     store_obj = Store(products_list)
     start(store_obj)
 

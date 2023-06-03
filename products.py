@@ -1,3 +1,4 @@
+
 class Product:
     """
         Encapsulates the product information, including its name and price,
@@ -42,15 +43,54 @@ class Product:
             self.active = False
 
     def show(self):
-        """ Show list of products in the store."""
+        """ Shows list of products in the store."""
         return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}"
 
     def buy(self, quantity):
-        """ Return a total price of the purchase."""
+        """ Returns a total price of the purchase."""
         if quantity <= 0:
-            raise ValueError("Quantity must be greater than 0.")
+            print(f"Error: Quantity must be greater than 0.")
         if self.quantity < quantity:
-            raise ValueError("Not enough quantity.")
+            print(f"Error: Not enough quantity.")
         total_price = self.price * quantity
         self.quantity -= quantity
         return total_price
+
+
+class NonStockedProducts(Product):
+    """ Some products in the store are not physical.
+        The quantity is set to zero and always stay that way. """
+    def __init__(self, name, price):
+        super().__init__(name, price, 0)
+        self.quantity = 0
+
+    def show(self):
+        """ Shows non-physical products"""
+        return f"{self.name}, Price: ${self.price}, Quantity: Unlimited."
+
+    def buy(self, quantity):
+        """ Return the price of each order."""
+        total_price = self.price * quantity
+        self.quantity -= quantity
+        return total_price
+
+
+class LimitedProducts(Product):
+    """ Some products can only be purchased X times in an order.
+     If an order is attempted with quantity larger than the maximum one,
+     it will be refused with an exception."""
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity):
+        """ Limits times of purchasing a limited product. """
+        if quantity > self.maximum:
+            print(f"Error:{self.name} can only be purchased {self.maximum} time(s) in an order.")
+        total_price = self.price * quantity
+        self.quantity -= quantity
+        return total_price
+
+    def show(self):
+        """ Shows limited products. """
+        return f"{self.name}, Price: ${self.price}, Limited to {self.maximum} per order!"
