@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 
 class Product:
     """
@@ -5,7 +7,6 @@ class Product:
         and keeps track of the total quantity of items of that product
         if it's available in the store.
     """
-
     def __init__(self, name: str, price: float, quantity: int):
         if not name:
             raise ValueError("Name cannot be empty.")
@@ -15,6 +16,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = True
+        self.promotion = None
 
     def get_quantity(self):
         """ Getter function for quantity. Return the quantity."""
@@ -26,6 +28,18 @@ class Product:
         self.quantity = quantity
         if self.quantity == 0:
             self.deactivate()
+
+    def get_promotion(self):
+        """ Getter function for promotion. Return promotion."""
+        return self.promotion
+
+    def set_promotion(self, promotion):
+        """ Setter function for promotion."""
+        self.promotion = promotion
+
+    def apply_promotion(self, price):
+        self.price = price
+        #return self.price
 
     def is_active(self):
         """ Getter function for active.
@@ -44,10 +58,14 @@ class Product:
 
     def show(self):
         """ Shows list of products in the store."""
-        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}"
+        if self.promotion:
+            return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}, Promotion: {self.promotion.name}"
+        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}, Promotion: None"
 
     def buy(self, quantity):
         """ Returns a total price of the purchase."""
+        if self.promotion:
+            return self.promotion.apply_promotion(Product, quantity)
         if quantity <= 0:
             print(f"Error: Quantity must be greater than 0.")
         if self.quantity < quantity:
@@ -66,7 +84,7 @@ class NonStockedProducts(Product):
 
     def show(self):
         """ Shows non-physical products"""
-        return f"{self.name}, Price: ${self.price}, Quantity: Unlimited."
+        return f"{self.name}, Price: ${self.price}, Quantity: Unlimited, Promotion: {self.promotion.name}"
 
     def buy(self, quantity):
         """ Return the price of each order."""
@@ -93,4 +111,47 @@ class LimitedProducts(Product):
 
     def show(self):
         """ Shows limited products. """
-        return f"{self.name}, Price: ${self.price}, Limited to {self.maximum} per order!"
+        return f"{self.name}, Price: ${self.price}, Limited to {self.maximum} per order!, Promotion: {self.promotion}"
+
+
+class Promotions(ABC):
+    """ Adds promotions to a product instance."""
+    def __init__(self, name):
+        self.name = name
+
+    @abstractmethod
+    def apply_promotion(self, product, quantity):
+        pass
+
+
+class SecondHalfPrice(Promotions):
+    """ Apply half price for a second product."""
+    def apply_promotion(self, product, quantity):
+        regular_price = product.price * quantity
+        discount_price = regular_price * 3/4
+        return discount_price
+
+
+class ThirdOneFree(Promotions):
+    """ Apply the third one free."""
+    def apply_promotion(self, product, quantity):
+        regular_price = product.price * quantity
+        discount_price = regular_price - (regular_price/3)
+        return discount_price
+
+
+class PercentDiscount(Promotions):
+    """ Apply discount percent off."""
+    def __init__(self, name, percent: float):
+        super().__init__(name)
+        self.percent = percent
+
+    def apply_promotion(self, product, quantity):
+        regular_price = product.price * quantity
+        discount_price = regular_price * (1 - self.percent)
+        return discount_price
+
+
+
+
+
