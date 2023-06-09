@@ -37,10 +37,6 @@ class Product:
         """ Setter function for promotion."""
         self.promotion = promotion
 
-    def apply_promotion(self, price):
-        self.price = price
-        #return self.price
-
     def is_active(self):
         """ Getter function for active.
             Return True if the product is active, otherwise False."""
@@ -65,7 +61,7 @@ class Product:
     def buy(self, quantity):
         """ Returns a total price of the purchase."""
         if self.promotion:
-            return self.promotion.apply_promotion(Product, quantity)
+            return self.promotion.apply_promotion(self, quantity)
         if quantity <= 0:
             print(f"Error: Quantity must be greater than 0.")
         if self.quantity < quantity:
@@ -142,14 +138,15 @@ class ThirdOneFree(Promotions):
 
 class PercentDiscount(Promotions):
     """ Apply discount percent off."""
-    def __init__(self, name, percent: float):
+    def __init__(self, name, percent):
         super().__init__(name)
         self.percent = percent
 
     def apply_promotion(self, product, quantity):
         regular_price = product.price * quantity
-        discount_price = regular_price * (1 - self.percent)
+        discount_price = regular_price * (1 - (self.percent/100))
         return discount_price
+
 
 
 
