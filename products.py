@@ -121,7 +121,7 @@ class Promotions(ABC):
 
 
 class SecondHalfPrice(Promotions):
-    """ Apply half price for a second product."""a
+    """ Apply half price for a second product."""
     def apply_promotion(self, product, quantity):
         if product.quantity < quantity:
             print(f"Error: Not enough quantity.")
