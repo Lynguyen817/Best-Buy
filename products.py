@@ -125,6 +125,7 @@ class SecondHalfPrice(Promotions):
     def apply_promotion(self, product, quantity):
         regular_price = product.price * quantity
         discount_price = regular_price * 3/4
+        product.quantity -= quantity
         return discount_price
 
 
@@ -133,6 +134,7 @@ class ThirdOneFree(Promotions):
     def apply_promotion(self, product, quantity):
         regular_price = product.price * quantity
         discount_price = regular_price - (regular_price/3)
+        product.quantity -= quantity
         return discount_price
 
 
@@ -145,6 +147,7 @@ class PercentDiscount(Promotions):
     def apply_promotion(self, product, quantity):
         regular_price = product.price * quantity
         discount_price = regular_price * (1 - (self.percent/100))
+        product.quantity -= quantity
         return discount_price
 
 
