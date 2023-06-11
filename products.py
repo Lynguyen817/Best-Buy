@@ -121,8 +121,10 @@ class Promotions(ABC):
 
 
 class SecondHalfPrice(Promotions):
-    """ Apply half price for a second product."""
+    """ Apply half price for a second product."""a
     def apply_promotion(self, product, quantity):
+        if product.quantity < quantity:
+            print(f"Error: Not enough quantity.")
         regular_price = product.price * quantity
         discount_price = regular_price * 3/4
         product.quantity -= quantity
@@ -132,6 +134,8 @@ class SecondHalfPrice(Promotions):
 class ThirdOneFree(Promotions):
     """ Apply the third one free."""
     def apply_promotion(self, product, quantity):
+        if product.quantity < quantity:
+            print(f"Error: Not enough quantity.")
         regular_price = product.price * quantity
         discount_price = regular_price - (regular_price/3)
         product.quantity -= quantity
@@ -145,6 +149,8 @@ class PercentDiscount(Promotions):
         self.percent = percent
 
     def apply_promotion(self, product, quantity):
+        if product.quantity < quantity:
+            print(f"Error: Not enough quantity.")
         regular_price = product.price * quantity
         discount_price = regular_price * (1 - (self.percent/100))
         product.quantity -= quantity
